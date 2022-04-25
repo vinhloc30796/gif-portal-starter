@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'; /* TODO: what does useEffect do? */
+import React, { useEffect } from 'react'; // TODO: what does useEffect do?
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
 
@@ -17,6 +17,13 @@ const App = () => {
       if (solana) {
         if (solana.isPhantom) {
           console.log('Phantom wallet found!');
+
+          // Calling the connect function will trigger the wallet to connect to the browser.
+          const response = await solana.connect({ onlyIfTrusted: true}); // Reference: https://docs.phantom.app/integrating/establishing-a-connection#eagerly-connecting
+          console.log(
+            'Connected with Public Key:',
+            response.publicKey.toString('hex') // TODO: compare toString() with toString('hex')
+          )
         }
       }
       else {
