@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'; // TODO: what does useEffect do?
+import React, { useEffect, useState } from 'react'; // TODO: what does useEffect do?
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
 
@@ -7,6 +7,8 @@ const TWITTER_HANDLE = 'vl307';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 const App = () => {
+  const [walletAddress, setWalletAddress] = useState(null); // Define state for wallet address
+
   const checkIfWalletIsConnected = async () => {
     /**
      * Checks if a Phanton Wallet is connected to the browser.
@@ -19,11 +21,13 @@ const App = () => {
           console.log('Phantom wallet found!');
 
           // Calling the connect function will trigger the wallet to connect to the browser.
-          const response = await solana.connect({ onlyIfTrusted: true}); // Reference: https://docs.phantom.app/integrating/establishing-a-connection#eagerly-connecting
+          const response = await solana.connect({ onlyIfTrusted: true }); // Reference: https://docs.phantom.app/integrating/establishing-a-connection#eagerly-connecting
           console.log(
             'Connected with Public Key:',
             response.publicKey.toString('hex') // TODO: compare toString() with toString('hex')
-          )
+          );
+
+          setWalletAddress(response.publicKey.toString('hex')); // Store the wallet address for later use
         }
       }
       else {
@@ -60,13 +64,14 @@ const App = () => {
 
   return (
     <div className="App">
-      <div className="container">
+      <div className={walletAddress ? 'authed-container' : 'container'}>  {/* Styling fanciness */}
         <div className="header-container">
           <p className="header">🖼 GIF Portal</p>
           <p className="sub-text">
             View your GIF collection in the metaverse ✨
           </p>
-          {renderNotConnectedContainer()}
+          {/* Add the condition to show this only if we don't have a wallet address */}
+          {!walletAddress && renderNotConnectedContainer()}
         </div>
         <div className="footer-container">
           <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
