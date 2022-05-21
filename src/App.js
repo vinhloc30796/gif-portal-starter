@@ -18,6 +18,7 @@ const TEST_GIFS = [
 const App = () => {
   const [walletAddress, setWalletAddress] = useState(null); // Define state for wallet address
   const [inputValue, setInputValue] = useState(''); // Define state for input value
+  const [gifList, setGifList] = useState([]);
 
   const checkIfWalletIsConnected = async () => {
     /**
@@ -64,6 +65,8 @@ const App = () => {
   const sendGif = async () => {
     if (inputValue.length > 0 & inputValue.endsWith('.gif')) {
       console.log('Gif link:', inputValue);
+      setGifList([...gifList, inputValue]);
+      setInputValue('');
     }
     else {
       alert('Please enter a valid GIF link!');
@@ -101,7 +104,7 @@ const App = () => {
         <button type="submit" className="cta-button submit-gif-button">Submit</button>
       </form>
       <div className="gif-grid">
-        {TEST_GIFS.map((gif, index) => (
+        {gifList.map((gif, index) => (
           <div className="gif-item" key={gif}>
             <img src={gif} alt={`Gif ${index}`} />
           </div>
@@ -120,6 +123,15 @@ const App = () => {
     window.addEventListener('load', onLoad);
     return () => window.removeEventListener('load', onLoad);
   }, []);
+
+  useEffect(() => {
+    if (walletAddress) {
+      console.log('Fetching GIF list...');
+      // TODO: Add Solana program
+      // Set state
+      setGifList(TEST_GIFS);
+    }
+  }, [walletAddress]);
 
 
   return (
