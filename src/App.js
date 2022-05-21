@@ -17,6 +17,7 @@ const TEST_GIFS = [
 
 const App = () => {
   const [walletAddress, setWalletAddress] = useState(null); // Define state for wallet address
+  const [inputValue, setInputValue] = useState(''); // Define state for input value
 
   const checkIfWalletIsConnected = async () => {
     /**
@@ -58,7 +59,21 @@ const App = () => {
       setWalletAddress(response.publicKey.toString('hex'));
     }
     
-  }  
+  };
+
+  const sendGif = async () => {
+    if (inputValue.length > 0 & inputValue.endsWith('.gif')) {
+      console.log('Gif link:', inputValue);
+    }
+    else {
+      alert('Please enter a valid GIF link!');
+    }
+  }
+  
+  const onInputChange = (event) => {
+    const { value } = event.target;
+    setInputValue(value);
+  }
 
   const renderNotConnectedContainer = () => (
     <button
@@ -71,6 +86,20 @@ const App = () => {
 
   const renderConnectedContainer = () => (
     <div className="connected-container">
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          sendGif();
+        }}
+      >
+        <input 
+          type="text" 
+          placeholder="Enter GIF link (ending in .gif)"
+          value={inputValue}
+          onChange={onInputChange}
+          ></input>
+        <button type="submit" className="cta-button submit-gif-button">Submit</button>
+      </form>
       <div className="gif-grid">
         {TEST_GIFS.map((gif, index) => (
           <div className="gif-item" key={gif}>
