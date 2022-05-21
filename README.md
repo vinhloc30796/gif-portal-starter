@@ -19,3 +19,16 @@ Have some questions make sure you head over to your [buildspace Dashboard](https
 ## References
 
 * [jagregory/gist:710671](https://gist.github.com/jagregory/710671) - How to move to a fork after cloning
+
+## Installation logs
+
+### Solana
+
+```bash
+vinhloc30796@LAPTOP-5CV4HGOA:/mnt/d/gif-portal-starter$ solana config set --url localhost
+getConfig File: /home/vinhloc30796/.config/solana/cli/config.yml
+RPC URL: http://localhost:8899 
+WebSocket URL: ws://localhost:8900/ (computed)
+Keypair Path: /home/vinhloc30796/.config/solana/id.json 
+Commitment: confirmed 
+```
