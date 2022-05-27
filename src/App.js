@@ -6,6 +6,7 @@ import { Program, Provider, web3 } from '@project-serum/anchor';
 import twitterLogo from './assets/twitter-logo.svg';
 import './App.css';
 import idl from './idl.json';
+import kp from './keypair.json';
 
 // Constants
 const TWITTER_HANDLE = 'vl307';
@@ -23,7 +24,9 @@ const TEST_GIFS = [
 const { SystemProgram, Keypair } = web3;
 
 // Create keypair for the GIF data account
-let baseAccount = Keypair.generate()
+const arr = Object.values(kp._keypair.secretKey);
+const secret = new Uint8Array(arr);
+const baseAccount = Keypair.fromSecretKey(secret);
 
 // Get our program ID
 const programId = new PublicKey(idl.metadata.address);
@@ -82,17 +85,6 @@ const App = () => {
     }
     
   };
-
-  const sendGif = async () => {
-    if (inputValue.length > 0 & inputValue.endsWith('.gif')) {
-      console.log('Gif link:', inputValue);
-      setGifList([...gifList, inputValue]);
-      setInputValue('');
-    }
-    else {
-      alert('Please enter a valid GIF link!');
-    }
-  }
   
   const onInputChange = (event) => {
     const { value } = event.target;
@@ -202,7 +194,31 @@ const App = () => {
     }
   };
 
-  
+  const sendGif = async () => {
+    if (inputValue.length === 0) {
+      console.log('No input value! 🤔');
+      return;
+    }
+    setInputValue('');
+    console.log('Gif link:', inputValue);
+
+    try {
+      const provider = getProvider();
+      const program = new Program(idl, programId, provider);
+      console.log("Ping! 🏓")
+
+      await program.rpc.addGif(inputValue, {
+        accounts: {
+          baseAccount: baseAccount.publicKey,
+          user: provider.wallet.publicKey,
+        },
+      })
+      console.log('GIF sent to program: ', inputValue);
+      await getGifList()
+    } catch (error) {
+      console.log('Error sending GIF: ', error);
+    }
+  }
 
   useEffect(() => {
     if (walletAddress) {
